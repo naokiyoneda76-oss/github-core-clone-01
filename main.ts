@@ -18,6 +18,9 @@
 
 import { createApp } from './app.ts';
 
+// This entrypoint runs the github-core-clone-01 forge env lifecycle.
+// The server implementation itself lives in app.ts.
+
 const ENV_URL = (process.env.MAKEFUN_ENV_URL ?? '').replace(/\/+$/, '');
 if (ENV_URL === '') {
   process.stderr.write('[entry] MAKEFUN_ENV_URL is not set: there is no env to register with\n');
@@ -26,6 +29,7 @@ if (ENV_URL === '') {
 
 /** How long one register or done request may take before it is abandoned and retried. */
 const REQUEST_TIMEOUT_MS = 30_000;
+const ENTRY_ID = 'github-core-clone-01';
 /** The first wait between retries, and the longest. */
 const RETRY_INITIAL_MS = 250;
 const RETRY_MAX_MS = 2_000;
@@ -87,6 +91,7 @@ async function main(): Promise<void> {
   if (address === null || typeof address === 'string') throw new Error('the server did not bind an ephemeral TCP port');
   process.stdout.write(`[entry] listening on port ${address.port}\n`);
 
+  process.stdout.write(`[entry] ${ENTRY_ID} starting\n`);
   await register(address.port);
   process.stdout.write('[entry] registered; waiting for the env to say done\n');
 
